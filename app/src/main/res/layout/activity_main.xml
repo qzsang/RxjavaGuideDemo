@@ -59,6 +59,16 @@
             android:textAllCaps="false"
             />
 
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="验证订阅会自动取消绑定（处理完成时）"
+            android:onClick="clickTest"
+            android:textAllCaps="false"
+            />
+
+
     </LinearLayout>
 
 </ScrollView>

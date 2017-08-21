@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(String s) {
                         log(Tag, "s：" + s);
                     }
-                })
-                .unsubscribe();//解除订阅
+                });
     }
 //    通过from生成Observer（产生异常）
     public void clickFrom (View view) {
@@ -76,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         log(Tag, "s：" + s);
 
                     }
-                })
-                .unsubscribe();//解除订阅
+                });
     }
 
 
@@ -95,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     public void call(String s) {
                         log(Tag, "s：" + s);
                     }
-                })
-                .unsubscribe();//解除订阅
+                });
     }
 
 
@@ -118,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     public void call(String s) {
                         log(Tag, "s：" + s);
                     }
-                })
-                .unsubscribe();//解除订阅
+                });
     }
 
 
@@ -141,14 +137,14 @@ public class MainActivity extends AppCompatActivity {
                     public void call(UserBean userBean) {
                         log(Tag, "userbean：" + userBean);
                     }
-                })
-                .unsubscribe();
+                });
     }
 
+    Subscription subscription;
     public void clickThreadChange (View view) {
 
         final String Tag = "clickThreadChange";
-        Subscription subscription = Observable.just("qzsang","xiaowang","xiaoming")
+        subscription = Observable.just("qzsang","xiaowang","xiaoming")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, String>() {
@@ -166,10 +162,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
+        log(Tag, "isUnsubscribed：" + subscription.isUnsubscribed());
         compositeSubscription.add(subscription);
     }
 
+    public void clickTest (View view) {//源码解析为什么会自动取消订阅：  http://blog.csdn.net/jdsjlzx/article/details/51542003
+        if (subscription == null) return;
+
+        final String Tag = "clickTest";
+        log(Tag, "isUnsubscribed：" + subscription.isUnsubscribed());//用于验证  其实在处理订阅中  如果完成  或者 发送错误  它将会自定解除订阅
+    }
 
     private void log(String tag, String info) {
         Log.e(tag, info);
@@ -179,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //如果在程序退出后还没出处理完成  就解除订阅
         if (compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }

@@ -1,5 +1,7 @@
 package com.example.qzsang.rxjavaguidedemo;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -7,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,100 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
     }
+
+    //需求： 上传图片并且通过返回url的显示img  （这个需求并不符合实际需求，但是我们通过这个需求来 使不使用rxjava两个代码的区别）
+
+    //上传图片并且通过返回url的显示demo1
+    public void clickDemo1(View v) {
+        final File imgFile = new File("");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int i = 1/0;
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                File finalFile =compressImag(imgFile);
+
+                final String url = upload(finalFile);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            int i = 1/0;
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        showImag(url);
+                    }
+                });
+
+            }
+        }).start();
+    }
+    //上传图片并且通过返回url的显示demo2
+    public void clickDemo2(View v) {
+        File imgFile = new File("");
+        Observable.just(imgFile)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<File, File>() {
+
+                    @Override
+                    public File call(File file) {
+                        int i = 1/0;
+                        return compressImag(file);
+                    }
+                })
+                .map(new Func1<File, String>() {
+                    @Override
+                    public String call(File file) {
+                        return upload(file);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        int i = 1/0;
+                        showImag(s);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    void showImag(String url) {
+        Toast.makeText(this,"图片已经显示",Toast.LENGTH_SHORT).show();
+    }
+
+    String upload (File file) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "url" + file.getAbsolutePath();
+    }
+
+
+    //压缩
+    File compressImag(File file) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+
+
 
 //    通过just生成Observer ()
     public void clickJust (View view) {

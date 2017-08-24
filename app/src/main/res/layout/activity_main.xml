@@ -69,6 +69,22 @@
             />
 
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="demo1"
+            android:onClick="clickDemo1"
+            android:textAllCaps="false"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="demo2"
+            android:onClick="clickDemo2"
+            android:textAllCaps="false"
+            />
+
     </LinearLayout>
 
 </ScrollView>
